@@ -33,12 +33,12 @@ class RedisSearch
     }
 
     /**
-     * @param string $varName
+     * @param string $tableName
      * @return string
      */
-    private function getVarKey(string $varName): string
+    private function getVarKey(string $tableName): string
     {
-        return $this->prefix . ':' . $varName;
+        return $this->prefix . ':' . $tableName;
     }
 
     /**
@@ -104,32 +104,6 @@ class RedisSearch
 
     /**
      * @param $tableName
-     * @param $partText
-     * @param null $fieldName
-     * @return mixed
-     */
-    public function searchFull($tableName, $partText, $fieldName = null)
-    {
-        $prefix = $this->getTablePrefix($tableName);
-
-        if ($fieldName) {
-            $prefix = $prefix . $fieldName . ':';
-        } else {
-            $prefix = $prefix . '*:';
-        }
-
-        $keys = $this->client->keys($prefix . '*' . urlencode($this->strtolower($partText)) . '*');
-
-        $idList = [];
-        foreach ($keys as $key) {
-            $idList[] = $this->client->get($key);
-        }
-
-        return $idList;
-    }
-
-    /**
-     * @param $tableName
      * @return mixed
      */
     public function totalCount($tableName)
@@ -165,29 +139,13 @@ class RedisSearch
 
         $this->delete($tableName, $id);
 
-        foreach ($data as $field => $val) {
-            $this->client->set($prefix . $field . ':' . urlencode($this->strtolower($val)) . ':' . $id, $id);
-        }
-
-        return true;
-    }
-
-    /**
-     * @param $tableName
-     * @param $id
-     * @param $data
-     * @return bool
-     */
-    public function addOrUpdateRepeatField($tableName, $id, $data)
-    {
-        $prefix = $this->getTablePrefix($tableName);
-
-        $this->delete($tableName, $id);
-
-        foreach ($data as $key => $value) {
-            foreach ($value as $val) {
-                $this->client->set($prefix . $key . ':' . urlencode($this->strtolower($val)) . ':' . $id, $id);
+        foreach ($data as $field => $value) {
+            if (is_array($value)) {
+                foreach ($value as $val) {
+                    $this->client->set($prefix . $field . ':' . urlencode($this->strtolower($val)) . ':' . $id, $id);
+                }
             }
+            $this->client->set($prefix . $field . ':' . urlencode($this->strtolower($val)) . ':' . $id, $id);
         }
 
         return true;
@@ -197,53 +155,9 @@ class RedisSearch
      * @param $str
      * @return bool|false|mixed|string|string[]|null
      */
-    public function strtolower($str)
+    private function strtolower($str)
     {
         return mb_strtolower($str);
-    }
-
-    /**
-     * @param string $key
-     * @param $data
-     * @return mixed
-     */
-    public function refreshJSONString(string $key, $data)
-    {
-        $redisKey = $this->getVarKey($key);
-
-        return $this->client->set($redisKey, json_encode($data));
-    }
-
-    /**
-     * @param string $varName
-     * @return mixed
-     */
-    public function getJsonData(string $varName)
-    {
-        $redisKey = $this->getVarKey($varName);
-
-        return json_decode($this->client->get($redisKey), true);
-    }
-
-    /**
-     * @param array $data
-     * @param string $search
-     * @return array
-     */
-    public function filterDataByString(array $data, string $search): array
-    {
-        $filteredData = [];
-
-        foreach ($data as $item) {
-            foreach ($item as $value) {
-                if (strpos($value, $search) !== false) {
-                    $filteredData[] = $item;
-                    break;
-                }
-            }
-        }
-
-        return $filteredData;
     }
 
     /**

@@ -1,0 +1,21 @@
+{
+    "name": "vladimir50/redis-search",
+    "description": "Simple redis search library",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Vladimir Malets",
+            "email": "vladimirmalec50@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "RedisSearch\\RedisSearch\\": "src/"
+        }
+    },
+    "require": {
+        "predis/predis": "^1.1"
+    }
+}

@@ -33,15 +33,6 @@ class RedisSearch
     }
 
     /**
-     * @param string $tableName
-     * @return string
-     */
-    private function getVarKey(string $tableName): string
-    {
-        return $this->prefix . ':' . $tableName;
-    }
-
-    /**
      * @param $tableName
      * @param $data
      * @return bool
@@ -75,6 +66,8 @@ class RedisSearch
     }
 
     /**
+     * Search for a value in a specific column in the table, if the 4th parameter is passed, then it will search for a complete entry by the passed value
+     *
      * @param $tableName
      * @param $partText
      * @param null $fieldName
@@ -103,6 +96,8 @@ class RedisSearch
     }
 
     /**
+     * Returns the number of records in a table
+     *
      * @param $tableName
      * @return mixed
      */
@@ -112,6 +107,8 @@ class RedisSearch
     }
 
     /**
+     * Deletes one row from the table by ID
+     *
      * @param $tableName
      * @param $id
      * @return mixed
@@ -128,6 +125,8 @@ class RedisSearch
     }
 
     /**
+     * Adds or updates one record in the table by ID
+     *
      * @param $tableName
      * @param $id
      * @param $data
@@ -161,6 +160,8 @@ class RedisSearch
     }
 
     /**
+     * In order to update a specific field by ID
+     *
      * @param $tableName
      * @param $id
      * @param $field
@@ -179,6 +180,8 @@ class RedisSearch
     }
 
     /**
+     * In order to delete a specific field by ID
+     *
      * @param $tableName
      * @param $id
      * @param $field
@@ -191,10 +194,11 @@ class RedisSearch
         if ($keys) {
             return $this->client->del($keys);
         }
+        return null;
     }
 
     /**
-     * Clear all cache
+     * Use for clear or Redis tables
      */
     public function clearAll()
     {
@@ -202,6 +206,8 @@ class RedisSearch
     }
 
     /**
+     * Use to get all Redis rows, if a parameter is passed, then you will get all rows from a specific table
+     *
      * @param null $table
      * @return mixed
      */
@@ -217,6 +223,8 @@ class RedisSearch
     }
 
     /**
+     * You can specify the table prefix when initializing the service, or specify it via the method
+     *
      * @return mixed|PredisClient
      */
     public function getClient()
@@ -225,6 +233,8 @@ class RedisSearch
     }
 
     /**
+     * And you also have the option of using the standard Predis client
+     *
      * @param string $prefix
      * @return RedisSearch
      */

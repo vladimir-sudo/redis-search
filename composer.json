@@ -3,6 +3,7 @@
     "description": "Simple redis search library",
     "type": "library",
     "license": "MIT",
+    "version": "1.0.0",
     "authors": [
         {
             "name": "Vladimir Malets",

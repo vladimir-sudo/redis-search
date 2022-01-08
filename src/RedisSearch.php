@@ -143,8 +143,9 @@ class RedisSearch
                 foreach ($value as $val) {
                     $this->client->set($prefix . $field . ':' . urlencode($this->strtolower($val)) . ':' . $id, $id);
                 }
+            } else {
+                $this->client->set($prefix . $field . ':' . urlencode($this->strtolower($value)) . ':' . $id, $id);
             }
-            $this->client->set($prefix . $field . ':' . urlencode($this->strtolower($val)) . ':' . $id, $id);
         }
 
         return true;

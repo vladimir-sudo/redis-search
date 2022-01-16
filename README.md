@@ -37,6 +37,16 @@ Search for a value in a specific column in the table, if the 4th parameter is pa
     
     $redisSearch->search('products', $value, $key);
 ```
+Search in range for a value in a specific column in the table
+```php
+    $values = [
+        10,
+        100
+    ];
+    $key = 'price';
+    
+    $redisSearch->search('products', $values, $key);
+```
 Returns the number of records in a table
 ```php
     $redisSearch->totalCount('products');

@@ -94,6 +94,52 @@ class RedisSearch
 
         return $idList;
     }
+    
+     /**
+     * Search range for a value in a specific column in the table
+     *
+     * @param $tableName
+     * @param array $values
+     * @param null $fieldName
+     * @return mixed
+     */
+    public function searchRange(string $tableName, array $values = [], string $fieldName)
+    {
+        $prefix = $this->getTablePrefix($tableName);
+
+        $prefix .= $fieldName . ':';
+
+        $keys = $this->client->keys($prefix . '*');
+
+        $res = false;
+        $idList = [];
+
+        $from = current($values);
+        $to = end($values);
+
+        foreach ($keys as $key) {
+            $keyStr = str_replace($prefix, '', $key);
+
+            [$val, $id] = explode(':', $keyStr);
+
+            if (!empty($from) and !empty($to)) {
+                if ($from <= $val and $to >= $val) {
+                    $idList[] = $id;
+                }
+            } elseif (!empty($from)) {
+                if ($from <= $val) {
+                    $idList[] = $id;
+                }
+            } elseif (!empty($from)) {
+                if ($to >= $val) {
+                    $idList[] = $id;
+                }
+            } else {
+                $idList[] = $id;
+            }
+        }
+        return $idList;
+    }
 
     /**
      * Returns the number of records in a table

@@ -45,7 +45,7 @@ Search in range for a value in a specific column in the table
     ];
     $key = 'price';
     
-    $redisSearch->search('products', $values, $key);
+    $redisSearch->searchRange('products', $values, $key);
 ```
 Returns the number of records in a table
 ```php
